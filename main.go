@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	"movie_service/internal/handlers"
 )
 
 func main() {
@@ -31,6 +32,9 @@ func main() {
 
 	//Подключение к бд
 	database.Connect()
+	
+	//Регистрация пользователя
+	app.Post("/register", handlers.Register)
 
 	//Запуск сервера
 	log.Fatal(app.Listen(":" + port))
