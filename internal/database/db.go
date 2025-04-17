@@ -25,6 +25,6 @@ func Connect() {
 	//Миграция модели User
 	err = db.AutoMigrate(&models.User{})
 	if err != nil {
-		log.Fatal("🚨 Ошибка миграции:", err)
+		log.Fatal("Ошибка миграции:", err)
 	}
 }

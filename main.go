@@ -35,6 +35,8 @@ func main() {
 	
 	//Регистрация пользователя
 	app.Post("/register", handlers.Register)
+	//Аутентификация пользователя
+	app.Post("/login", handlers.Login)
 
 	//Запуск сервера
 	log.Fatal(app.Listen(":" + port))
