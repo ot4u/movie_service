@@ -23,8 +23,14 @@ func Connect() {
 	fmt.Println("Успешное подключение к PostgreSQL")
 
 	//Миграция модели User
-	err = db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(
+		&models.User{},
+		&models.Movie{},
+		&models.UserLike{},
+		&models.Rating{},
+	)
 	if err != nil {
 		log.Fatal("Ошибка миграции:", err)
 	}
+
 }

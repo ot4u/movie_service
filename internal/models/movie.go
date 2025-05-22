@@ -6,7 +6,15 @@ import (
 
 type Movie struct {
 	gorm.Model
-	TMBD_ID string `gorm:"unique;not null"`
-	Title    string `gorm:"unique;not null"`
-	PosterPath string `gorm:"not null"`
+	TMDB_ID     int    `gorm:"not null"`
+	Title       string `gorm:"not null"`
+	PosterPath  string
+	ReleaseDate string
+}
+
+type MovieResponse struct {
+	TMDB_ID     int    `json:"tmdb_id"`
+	Title       string `json:"title"`
+	PosterPath  string `json:"poster_path"`
+	ReleaseDate string `json:"release_date"`
 }

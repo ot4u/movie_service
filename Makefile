@@ -1,21 +1,20 @@
-all: build
-
 build:
-	go mod download
-	go build -o ./bin/movie_service
+	docker-compose build
 
-rebuild:
-	make build
+run:
+	docker-compose up --build
 
-run: build
-	./bin/movie_service
+stop:
+	docker-compose down
 
-test:
-	go test -v ./pool
-	make clean
-
-style:
-	go fmt ./...
+restart:
+	docker-compose restart
 
 clean:
-	rm -rf ./bin *.txt pool/*.txt movie_service
+	docker-compose down -v
+
+fmt:
+	go fmt ./...
+
+install:
+	go mod tidy
