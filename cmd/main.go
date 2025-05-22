@@ -74,6 +74,9 @@ func main() {
 	// Поиск фильма из внешнего апи
 	app.Get("/search", handlers.SearchMovies)
 
+	//Получение рекомендаций
+	app.Get("/movies/recommendations", middleware.JWTProtected(), handlers.GetRecommendations)
+
 	//Запуск сервера
 	log.Fatal(app.Listen(":" + port))
 

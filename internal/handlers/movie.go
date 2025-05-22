@@ -241,3 +241,46 @@ func SearchMovies(c *fiber.Ctx) error {
 
 	return c.JSON(results)
 }
+
+func GetRecommendations(c *fiber.Ctx) error {
+	user := c.Locals("user").(models.User)
+
+	// 1. Получаем ID фильмов, которые пользователь уже лайкнул
+	var likedIDs []uint
+	database.DB.
+		Model(&models.UserLike{}).
+		Where("user_id = ?", user.ID).
+		Pluck("movie_id", &likedIDs)
+
+	// 2. Находим популярные фильмы, которых у пользователя нет
+	var recommended []models.Movie
+	err := database.DB.
+		Table("user_likes").
+		Select("movies.*").
+		Joins("JOIN movies ON user_likes.movie_id = movies.id").
+		Where("user_likes.user_id != ?", user.ID).
+		Where("movies.id NOT IN ?", likedIDs).
+		Group("movies.id").
+		Order("count(user_likes.movie_id) DESC").
+		Limit(10).
+		Scan(&recommended).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Ошибка при получении рекомендаций",
+		})
+	}
+
+	// 3. Формируем ответ
+	var response []models.MovieResponse
+	for _, m := range recommended {
+		response = append(response, models.MovieResponse{
+			TMDB_ID:     m.TMDB_ID,
+			Title:       m.Title,
+			PosterPath:  m.PosterPath,
+			ReleaseDate: m.ReleaseDate,
+		})
+	}
+
+	return c.JSON(response)
+}
